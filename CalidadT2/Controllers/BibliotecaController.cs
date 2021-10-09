@@ -44,10 +44,8 @@ namespace CalidadT2.Controllers
                 UsuarioId = user.Id,
                 Estado = ESTADO.POR_LEER
             };
-
+            repositoryB.SetTempDataService(TempData);
             repositoryB.AddBiblioteca(biblioteca);
-
-            TempData["SuccessMessage"] = "Se añádio el libro a su biblioteca";
 
             return RedirectToAction("Index", "Home");
         }
@@ -57,10 +55,8 @@ namespace CalidadT2.Controllers
         {
             repositoryU.SetHttpContext(HttpContext);
             Usuario user = repositoryU.LoggedUser();
-
+            repositoryB.SetTempDataService(TempData);
             repositoryB.MarcarLibroComoLeyendo(libroId,user);
-
-            TempData["SuccessMessage"] = "Se marco como leyendo el libro";
 
             return RedirectToAction("Index");
         }
@@ -70,10 +66,8 @@ namespace CalidadT2.Controllers
         {
             repositoryU.SetHttpContext(HttpContext);
             Usuario user = repositoryU.LoggedUser();
-
+            repositoryB.SetTempDataService(TempData);
             repositoryB.MarcarLibroComoTerminado(libroId, user);
-
-            TempData["SuccessMessage"] = "Se marco como leyendo el libro";
 
             return RedirectToAction("Index");
         }

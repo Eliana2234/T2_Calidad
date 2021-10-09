@@ -1,5 +1,6 @@
 ﻿using CalidadT2.Constantes;
 using CalidadT2.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,25 @@ namespace CalidadT2.Repositories
     {
         public List<Biblioteca> BibliotecaDelUsuario(Usuario user);
         public void AddBiblioteca(Biblioteca biblioteca);
+        public void SetTempDataService(ITempDataDictionary TempData);
         public void MarcarLibroComoLeyendo(int libroId, Usuario user);
         public void MarcarLibroComoTerminado(int libroId, Usuario user);
     }
+
+
     public class BibliotecaRepository : IBibliotecaRepository
     {
         private readonly AppBibliotecaContext context;
-
+        private ITempDataDictionary TempData;
 
         public BibliotecaRepository(AppBibliotecaContext context)
         {
             this.context = context;
+        }
+
+        public void SetTempDataService(ITempDataDictionary TempData)
+        {
+            this.TempData = TempData;
         }
 
         public List<Biblioteca> BibliotecaDelUsuario(Usuario user)
@@ -35,7 +44,8 @@ namespace CalidadT2.Repositories
         {
             context.Add(biblioteca);
             context.SaveChanges();
-}
+            TempData["SuccessMessage"] = "Se añádio el libro a su biblioteca";
+        }
 
         public void MarcarLibroComoLeyendo(int libroId, Usuario user)
         {
@@ -45,6 +55,8 @@ namespace CalidadT2.Repositories
 
             libro.Estado = ESTADO.LEYENDO;
             context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Se marco como leyendo el libro";
         }
 
         public void MarcarLibroComoTerminado(int libroId, Usuario user)
@@ -55,6 +67,7 @@ namespace CalidadT2.Repositories
 
             libro.Estado = ESTADO.TERMINADO;
             context.SaveChanges();
+            TempData["SuccessMessage"] = "Se marco como terminado el libro";
         }
     }
 }
