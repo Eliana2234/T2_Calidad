@@ -14,17 +14,19 @@ namespace CalidadT2.Controllers
     [Authorize]
     public class BibliotecaController : Controller
     {
+        private readonly IUserRepository repositoryU;
         private readonly IBibliotecaRepository repositoryB;
-        public BibliotecaController(IBibliotecaRepository repositoryB)
+        public BibliotecaController(IUserRepository repositoryU, IBibliotecaRepository repositoryB)
         {
+            this.repositoryU = repositoryU;
             this.repositoryB = repositoryB;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            Usuario user = LoggedUser();
-
+            repositoryU.SetHttpContext(HttpContext);
+            Usuario user = repositoryU.LoggedUser();
             var model = repositoryB.BibliotecaDelUsuario(user);
 
             return View(model);
@@ -33,7 +35,8 @@ namespace CalidadT2.Controllers
         [HttpGet]
         public ActionResult Add(int libro)
         {
-            Usuario user = LoggedUser();
+            repositoryU.SetHttpContext(HttpContext);
+            Usuario user = repositoryU.LoggedUser();
 
             var biblioteca = new Biblioteca
             {
@@ -42,8 +45,7 @@ namespace CalidadT2.Controllers
                 Estado = ESTADO.POR_LEER
             };
 
-            app.Bibliotecas.Add(biblioteca);
-            app.SaveChanges();
+            repositoryB.AddBiblioteca(biblioteca);
 
             TempData["SuccessMessage"] = "Se añádio el libro a su biblioteca";
 
@@ -53,14 +55,10 @@ namespace CalidadT2.Controllers
         [HttpGet]
         public ActionResult MarcarComoLeyendo(int libroId)
         {
-            Usuario user = LoggedUser();
+            repositoryU.SetHttpContext(HttpContext);
+            Usuario user = repositoryU.LoggedUser();
 
-            var libro = app.Bibliotecas
-                .Where(o => o.LibroId == libroId && o.UsuarioId == user.Id)
-                .FirstOrDefault();
-
-            libro.Estado = ESTADO.LEYENDO;
-            app.SaveChanges();
+            repositoryB.MarcarLibroComoLeyendo(libroId,user);
 
             TempData["SuccessMessage"] = "Se marco como leyendo el libro";
 
@@ -70,25 +68,14 @@ namespace CalidadT2.Controllers
         [HttpGet]
         public ActionResult MarcarComoTerminado(int libroId)
         {
-            Usuario user = LoggedUser();
+            repositoryU.SetHttpContext(HttpContext);
+            Usuario user = repositoryU.LoggedUser();
 
-            var libro = app.Bibliotecas
-                .Where(o => o.LibroId == libroId && o.UsuarioId == user.Id)
-                .FirstOrDefault();
-
-            libro.Estado = ESTADO.TERMINADO;
-            app.SaveChanges();
+            repositoryB.MarcarLibroComoTerminado(libroId, user);
 
             TempData["SuccessMessage"] = "Se marco como leyendo el libro";
 
             return RedirectToAction("Index");
-        }
-
-        private Usuario LoggedUser()
-        {
-            var claim = HttpContext.User.Claims.FirstOrDefault();
-            var user = app.Usuarios.Where(o => o.Username == claim.Value).FirstOrDefault();
-            return user;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CalidadT2.Models;
 using CalidadT2.Repositories;
+using CalidadT2.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
