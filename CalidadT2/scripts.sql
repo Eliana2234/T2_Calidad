@@ -1,5 +1,4 @@
-USE [BibliotecaUPN]
-GO
+
 /****** Object:  Table [dbo].[__MigrationHistory]    Script Date: 12/11/2019 6:53:30 PM ******/
 SET ANSI_NULLS ON
 GO

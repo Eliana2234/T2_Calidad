@@ -7,21 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CalidadT2.Models;
 using Microsoft.EntityFrameworkCore;
+using CalidadT2.Repositories;
 
 namespace CalidadT2.Controllers
 {
     public class HomeController : Controller
     {
-        private AppBibliotecaContext app;
-        public HomeController(AppBibliotecaContext app)
+        private readonly ILibroRepository libroRepository;
+        public HomeController(ILibroRepository libroRepository)
         {
-            this.app = app;
+            this.libroRepository = libroRepository;
         }
 
         [HttpGet]
         public IActionResult Index()
-        {            
-            var model = app.Libros.Include(o => o.Autor).ToList();
+        {
+            var model = libroRepository.ListaLibros();
             return View(model);
         }
     }
