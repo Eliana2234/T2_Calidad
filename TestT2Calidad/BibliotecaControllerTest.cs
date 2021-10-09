@@ -35,8 +35,6 @@ namespace TestT2Calidad
             var repositoryU = new Mock<IUserRepository>();
             repositoryU.Setup(o => o.LoggedUser()).Returns(new Usuario());
 
-            var repositoryL = new Mock<ILibroRepository>();
-
             var repositoryB = new Mock<IBibliotecaRepository>();
 
             var controller = new BibliotecaController(repositoryU.Object, repositoryB.Object);
